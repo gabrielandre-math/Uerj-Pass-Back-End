@@ -1,0 +1,8 @@
+POST http://localhost:3333/events
+Content-Type: application/json
+
+{
+    "title": "Uerj Arte",
+    "details": "Evento para quem gosta de Arte!",
+    "maximumAttendees": 100
+}

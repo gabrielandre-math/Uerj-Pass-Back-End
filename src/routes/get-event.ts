@@ -4,7 +4,7 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma";
 import { dmmfToRuntimeDataModel } from "@prisma/client/runtime/library";
 import { title } from "process";
-type GetEventBody = {
+type GetEventParams = {
   eventId: string;
 };
 
@@ -30,7 +30,7 @@ export async function getEvent(app: FastifyInstance) {
         },
       },
     },
-    async (request: FastifyRequest<{ Params: GetEventBody }>, reply) => {
+    async (request: FastifyRequest<{ Params: GetEventParams }>, reply) => {
       const { eventId } = request.params;
       const event = await prisma.event.findUnique({
         select: {

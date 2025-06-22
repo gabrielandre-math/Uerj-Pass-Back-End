@@ -2,7 +2,7 @@ POST http://localhost:3333/events
 Content-Type: application/json
 
 {
-    "title": "Novo Evento 2",
+    "title": "Novo Evento 3",
     "details": null,
     "maximumAttendees": 1
 }
@@ -14,5 +14,9 @@ Content-Type: application/json
 
 {
     "name": "Gabriel André",
-    "email": "gabrieldevpyc2@gmail.com"
+    "email": "gabrieldevpyc@gmail.com"
 }
+
+###
+
+GET http://localhost:3333/events/ff4bd631-6cf6-4c7f-8d7f-eb66e61fbe34

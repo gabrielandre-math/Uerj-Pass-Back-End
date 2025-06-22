@@ -2,7 +2,17 @@ POST http://localhost:3333/events
 Content-Type: application/json
 
 {
-    "title": "Uerj Arte",
-    "details": "Evento para quem gosta de Arte!",
-    "maximumAttendees": 100
+    "title": "Novo Evento 2",
+    "details": null,
+    "maximumAttendees": 1
+}
+
+###
+
+POST http://localhost:3333/events/ff4bd631-6cf6-4c7f-8d7f-eb66e61fbe34/attendees
+Content-Type: application/json
+
+{
+    "name": "Gabriel André",
+    "email": "gabrieldevpyc2@gmail.com"
 }

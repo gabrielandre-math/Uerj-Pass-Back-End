@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma";
 import { dmmfToRuntimeDataModel } from "@prisma/client/runtime/library";
 import { title } from "process";
+import { BadRequest } from "./_erorrs/bad-request";
 type GetEventParams = {
   eventId: string;
 };
@@ -50,7 +51,7 @@ export async function getEvent(app: FastifyInstance) {
         },
       });
       if (event === null) {
-        throw new Error("Event not found.");
+        throw new BadRequest("Event not found.");
       }
       return reply.send({
         event: {

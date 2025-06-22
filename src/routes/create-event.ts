@@ -21,6 +21,7 @@ import { generateSlug } from "../utils/generate-slug";
 
 // Importa o cliente Prisma para acesso ao banco de dados
 import { PrismaClient } from "../generated/prisma";
+import { BadRequest } from "./_erorrs/bad-request";
 
 const prisma = new PrismaClient();
 
@@ -59,7 +60,7 @@ export async function createEvent(app: FastifyInstance) {
       });
 
       if (eventWithSameSlug !== null) {
-        throw new Error("Another event with same title already exists.");
+        throw new BadRequest("Another event with same title already exists.");
       }
 
       const event = await prisma.event.create({

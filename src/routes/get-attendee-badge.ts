@@ -3,6 +3,7 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { prisma } from "../lib/prisma";
 import { email } from "zod/v4";
+import { BadRequest } from "./_erorrs/bad-request";
 type GetAttendeeBadgeParams = {
   attendeeId: number;
 };
@@ -48,7 +49,7 @@ export async function getAttendeeBadge(app: FastifyInstance) {
       });
 
       if (attendee === null) {
-        throw new Error("Attendee not found.");
+        throw new BadRequest("Attendee not found.");
       }
 
       const port = request.socket.localPort;

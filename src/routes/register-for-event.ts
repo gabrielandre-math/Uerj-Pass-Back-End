@@ -2,6 +2,7 @@ import { FastifyInstance, FastifyRequest } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { prisma } from "../lib/prisma";
+import { BadRequest } from "./_erorrs/bad-request";
 type RegisterEventBody = {
   eventId: string;
   name: string;
@@ -55,14 +56,16 @@ export function registerForEvent(app: FastifyInstance) {
       ]);
 
       if (attendeeFromEmail !== null) {
-        throw new Error("This e-mail is already registered for this event.");
+        throw new BadRequest(
+          "This e-mail is already registered for this event."
+        );
       }
 
       if (
         event?.maximumAttendees &&
         amountOfAttendeesForEvent >= event?.maximumAttendees
       ) {
-        throw new Error(
+        throw new BadRequest(
           "The maximum number of attendees for this event has been reached."
         );
       }

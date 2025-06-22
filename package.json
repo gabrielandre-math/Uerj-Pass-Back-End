@@ -10,6 +10,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "type": "commonjs",
   "devDependencies": {
     "@types/node": "^24.0.3",

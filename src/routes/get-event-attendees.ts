@@ -2,12 +2,15 @@ import { FastifyInstance, FastifyRequest } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { prisma } from "../lib/prisma";
+
 type GetEventParams = {
   eventId: string;
 };
+
 type GetPageIndexQuery = {
   pageIndex: number;
   query: string | null;
+  limit: number;
 };
 
 export async function getEventAttendees(app: FastifyInstance) {
@@ -21,6 +24,14 @@ export async function getEventAttendees(app: FastifyInstance) {
         querystring: z.object({
           query: z.string().nullish(),
           pageIndex: z.string().nullish().default("0").transform(Number),
+          limit: z
+            .string()
+            .nullish()
+            .default("10")
+            .transform(Number)
+            .refine((val) => val >= 1 && val <= 100, {
+              message: "Limit must be between 1 and 100",
+            }),
         }),
         response: {
           200: z.object({
@@ -33,6 +44,12 @@ export async function getEventAttendees(app: FastifyInstance) {
                 checkedInAt: z.date().nullable(),
               })
             ),
+            pagination: z.object({
+              pageIndex: z.number(),
+              limit: z.number(),
+              total: z.number(),
+              totalPages: z.number(),
+            }),
           }),
         },
       },
@@ -45,7 +62,23 @@ export async function getEventAttendees(app: FastifyInstance) {
       reply
     ) => {
       const { eventId } = request.params;
-      const { pageIndex, query } = request.query;
+      const { pageIndex, query, limit } = request.query;
+
+      const whereClause = query
+        ? {
+            eventId,
+            name: {
+              contains: query,
+            },
+          }
+        : {
+            eventId,
+          };
+
+      const totalCount = await prisma.attendee.count({
+        where: whereClause,
+      });
+
       const attendees = await prisma.attendee.findMany({
         select: {
           id: true,
@@ -58,22 +91,16 @@ export async function getEventAttendees(app: FastifyInstance) {
             },
           },
         },
-        where: query
-          ? {
-              eventId,
-              name: {
-                contains: query,
-              },
-            }
-          : {
-              eventId,
-            },
-        take: 10,
-        skip: pageIndex * 10,
+        where: whereClause,
+        take: limit,
+        skip: pageIndex * limit,
         orderBy: {
           createdAt: "desc",
         },
       });
+
+      const totalPages = Math.ceil(totalCount / limit);
+
       return reply.send({
         attendees: attendees.map((attendee) => {
           return {
@@ -84,6 +111,12 @@ export async function getEventAttendees(app: FastifyInstance) {
             checkedInAt: attendee.checkIn?.createdAt ?? null,
           };
         }),
+        pagination: {
+          pageIndex,
+          limit,
+          total: totalCount,
+          totalPages,
+        },
       });
     }
   );

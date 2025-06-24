@@ -1,4 +1,4 @@
-# pass.in
+# Uerj-Pass
 
 O uerj-pass é uma aplicação de **gestão de participantes em eventos presenciais**. 
 

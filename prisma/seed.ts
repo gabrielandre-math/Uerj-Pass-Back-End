@@ -21,7 +21,7 @@ async function seed() {
 
   const attendeesToInsert: Prisma.AttendeeUncheckedCreateInput[] = [];
 
-  for (let i = 0; i <= 120; i++) {
+  for (let i = 0; i <= 100; i++) {
     attendeesToInsert.push({
       id: 10000 + i,
       name: faker.person.fullName(),
